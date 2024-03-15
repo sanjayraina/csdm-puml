@@ -1,0 +1,130 @@
+
+' set legend to have a white background
+skinparam legendBackgroundColor #FFFFFF
+' remove box around legend
+skinparam legendBorderColor #FFFFFF
+' remove the lines between the legend items
+skinparam legendEntrySeparator #FFFFFF
+
+legend top right
+    <b>Legend</b>
+    <#FFFFFF,#FFFFFF>|  <#24C2Ce> BC | Business Capability|
+    | <#24C2Ce> BA  | Business Application|
+    | <#009156> BS  | Business Service|
+    | <#009156> BSO | Business Service Offering|
+    | <#FCA822> TS | Technical Service |
+    | <#FCA822> TSO | Technical Service Offering|
+    | <#FCA822> AS | Application Service |
+    | <#FCA822> CI | Configuration Item |
+    |  | <b>Not all components shown for brevity</b>|
+endlegend
+
+skinparam RoundCorner 25
+skinparam titleBorderRoundCorner 15
+skinparam titleBorderThickness 1
+skinparam titleBorderColor red
+skinparam titleBackgroundColor Ivory
+skinparam Title {
+
+    ' Title background colour White
+    BackgroundColor     #FFFFFF
+
+    ' Overriden by sequence parameters
+    FontColor           #1F648E
+    FontName            Arial
+    FontSize            18
+    FontStyle           BOLD
+
+    ' Adds padding to title
+    Padding             1
+}
+
+' Define Business Capability
+!unquoted procedure $BusinessCapability($name)
+    #24C2Ce;line:black;line.bold;text:Black [
+        BC
+        ----
+        $name 
+    ]
+!endprocedure
+
+' Define Business Application
+!unquoted procedure $BusinessApplication($name)
+    #24C2Ce;line:black;text:Black [
+        BA
+        ----
+        $name
+    ]
+!endprocedure
+
+' Define Service Portfolio
+!unquoted procedure $ServicePortfolio($name)
+    #009156;line:black;line.bold;text:white [
+        SP
+        ----
+        $name
+    ]
+!endprocedure
+
+' Define Business Service
+!unquoted procedure $BusinessService($name)
+    #009156;line:black;line.bold;text:white [
+        BS
+        ----
+        $name
+    ]
+!endprocedure
+
+' Define Business Service Offering
+!unquoted procedure $BusinessServiceOffering($name)
+    #009156;line:black;text:white [
+        BSO
+        ----
+        $name
+    ]
+!endprocedure
+
+' Define Technical Service
+!unquoted procedure $TechnicalService($name)
+    #FCA822;line:black;line.bold;text:black [
+        TS
+        ----
+        $name
+    ]
+!endprocedure
+
+' Define Technical Service Offering
+!unquoted procedure $TechnicalServiceOffering($name)
+    #FCA822;line:black;line.bold;text:black [
+        TSO
+        ----
+        $name
+    ]
+!endprocedure
+
+' Define Application Service
+!unquoted procedure $ApplicationService($name)
+    #FCA822;line:black;line.bold;text:black [
+        AS
+        ----
+        $name
+    ]
+!endprocedure
+
+' Define CI Group
+!unquoted procedure $CIGroup($name)
+    #FCA822;line:black;text:black [
+        CI Group
+        ----
+        $name
+    ]
+!endprocedure
+
+' Define CI
+!unquoted procedure $CI($name)
+    #FCA822;line:black;text:black [
+        CI
+        ----
+        $name
+    ]
+!endprocedure
