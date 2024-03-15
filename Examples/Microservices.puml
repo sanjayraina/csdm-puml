@@ -1,0 +1,75 @@
+@startuml
+
+!include ../CSDM.puml
+
+title Microservices
+
+' Design Domain
+'
+package "Design" {
+    top to bottom direction
+
+    card bc_sales $BusinessCapability("Sales")
+    card ba_phone_order $BusinessApplication("Phone Order Management")
+    card ba_order_sales $BusinessApplication("Order Sales Management")
+}
+
+' Sell/Consume Domain
+'
+package "Sell/Consume" {
+    top to bottom direction
+    card sp_sales $ServicePortfolio("Sales")
+    card bs_online_sales $BusinessService("Online Sales")
+    card bso_online_order $BusinessServiceOffering("Online Ordering")
+}
+
+' Manage Tech Domain
+'
+package "Manage Tech" {
+
+    card as_online_order $ApplicationService("Online Order")
+    
+    rectangle "Application Stack" #Azure;line:grey {
+        card as_customer_mgr $ApplicationService("Customer Manager")
+        card as_currency_conv $ApplicationService("Currency Conv")
+        card as_tax_calc $ApplicationService("Tax Calc")
+
+        card cigrp_aws_windows $CIGroup("AWS Windows Server")
+        card ci_server123 $CI("Server123")
+        card ci_server456 $CI("Server456")
+
+    }
+    
+    rectangle "Technology Operations" #LightGrey;line.dotted {
+        card ts_cloud_hosting $TechnicalService("Cloud Hosting")
+        card tso_aws_windows_admin $TechnicalServiceOffering("AWS Windows Admin")
+    
+        card ts_site_reliability $TechnicalService("Site Reliability Services")
+        card tso_site_reliability $TechnicalServiceOffering("Site Reliability Engineering")
+    }
+}
+
+' Relationships
+
+bc_sales-d->ba_phone_order : Provided by
+bc_sales-d->ba_order_sales : Provided by
+ba_order_sales-->as_online_order: Consumes
+sp_sales-d->bs_online_sales
+bs_online_sales-d->bso_online_order
+bso_online_order-d->as_online_order
+
+ts_site_reliability-u->tso_site_reliability
+tso_site_reliability-u->as_customer_mgr
+tso_site_reliability-u->as_currency_conv
+tso_site_reliability-u->as_tax_calc
+as_customer_mgr-d->ci_server456
+as_currency_conv-d->ci_server123
+as_tax_calc-d->ci_server123
+
+ts_cloud_hosting-u->tso_aws_windows_admin
+tso_aws_windows_admin-u->cigrp_aws_windows : Depends on
+cigrp_aws_windows-u->ci_server456
+cigrp_aws_windows-u->ci_server123
+
+
+@enduml

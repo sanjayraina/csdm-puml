@@ -1,0 +1,88 @@
+@startuml
+
+!include ../CSDM.puml
+
+title SAP Financials
+
+' Design Domain
+'
+package "Design" {
+    top to bottom direction
+
+    card bc_manage_finance $BusinessCapability("Managing Financials")
+    card ba_finance_supply_chain $BusinessApplication("Financial Supply Chain")
+    card ba_finance_accounting $BusinessApplication("Financial Accounting")
+    card ba_investment_mgmt $BusinessApplication("Investment Management")
+    card ba_general_ledger $BusinessApplication("General Ledger")
+    card ba_payables $BusinessApplication("Payables")
+    card ba_receivables $BusinessApplication("Receivables")
+    card ba_asset_accounting $BusinessApplication("Asset Accounting")
+}
+
+' Sell/Consume Domain
+'
+package "Sell/Consume" {
+    top to bottom direction
+    card sp_finance_mgmt $ServicePortfolio("Financial Management")
+    card bs_finance_accounting $BusinessService("Financial Accounting")
+    card bso_general_ledger $BusinessServiceOffering("General Ledger")
+    card bso_payables $BusinessServiceOffering("Payables")
+    card bso_receivables $BusinessServiceOffering("Receivables")
+}
+
+' Manage Tech Domain
+'
+package "Manage Tech" {
+
+    
+    
+    rectangle "Application Service CIs" #Azure;line:grey {
+        card as_sap_finance $ApplicationService("SAP Finance")
+
+        card ci_database $CI("Database")
+        card ci_db_instance $CI("Database Instance")
+        card ci_app_server $CI("App Server")
+        card ci_server $CI("Server")
+
+    }
+    
+    rectangle "Technology Providers" #LightGrey;line.dotted {
+        card ts_db_mgmt $TechnicalService("Database Management")
+        card ts_hosting $TechnicalService("Database Management")
+        card tso_linux $TechnicalServiceOffering("Linux")
+    }
+}
+
+' Relationships
+
+bc_manage_finance-d->ba_finance_supply_chain : Provided by
+bc_manage_finance-d->ba_finance_accounting : Provided by
+bc_manage_finance-d->ba_investment_mgmt : Provided by
+ba_finance_accounting-d->ba_general_ledger: Provided by
+ba_finance_accounting-d->ba_payables: Provided by
+ba_finance_accounting-d->ba_receivables: Provided by
+ba_finance_accounting-d->ba_asset_accounting: Provided by
+
+sp_finance_mgmt-->bs_finance_accounting: Contains
+bs_finance_accounting-->bso_general_ledger: Contains
+bs_finance_accounting-->bso_payables: Contains
+bs_finance_accounting-->bso_receivables: Contains
+
+ba_general_ledger-->as_sap_finance: Depends on
+
+bso_general_ledger-->as_sap_finance: Depends on
+bso_payables-->as_sap_finance: Depends on
+bso_receivables-->as_sap_finance: Depends on
+
+as_sap_finance-d->ci_database: Depends on
+as_sap_finance-d->ci_app_server: Depends on
+ci_database-->ci_db_instance: Depends on
+ci_app_server-->ci_server
+
+ts_db_mgmt-u->ci_database: Manages
+ts_db_mgmt-u->ci_db_instance: Manages
+ts_hosting-u->tso_linux: Contains
+tso_linux-u->ci_server: Manages
+
+
+@enduml

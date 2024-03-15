@@ -1,0 +1,59 @@
+@startuml
+
+!include ../CSDM.puml
+
+title Conference Rooms
+
+' Design Domain
+'
+package "Design" {
+    top to bottom direction
+
+    card bc_comm_collab $BusinessCapability("Manage Communication &Collaboration")
+}
+
+' Sell/Consume Domain
+'
+package "Sell/Consume" {
+    top to bottom direction
+    card sp_collab $ServicePortfolio("Collaboration")
+    card bs_conf_services $BusinessService("Conferencing Services")
+
+    card bso_webex $BusinessServiceOffering("WebEx")
+    card bso_conf_room1 $BusinessServiceOffering("Conference Room 1")
+    card bso_board_room_exec $BusinessServiceOffering("Board Room Exec")
+    card bso_conf_room_telco $BusinessServiceOffering("Conference Room Telco")
+}
+
+' Manage Tech Domain
+'
+package "Manage Tech" {
+
+    card as_webex $ApplicationService("Webex")
+    
+    rectangle "Application Spoke (Dynatrace)" #Azure;line:grey {
+        card as_webex $ApplicationService("Webex")
+
+    }
+    
+    rectangle "Technology Operations" #LightGrey;line.dotted {
+        card ts_app_mgmt $TechnicalService("Application Management Services")
+
+        card tso_webex_admin $TechnicalServiceOffering("Webex Administration")
+    }
+}
+
+' Relationships
+
+bc_comm_collab-d->sp_collab : Provided by
+sp_collab-d->bs_conf_services
+bs_conf_services-d->bso_webex
+bs_conf_services-d->bso_conf_room1
+bs_conf_services-d->bso_board_room_exec
+bs_conf_services-d->bso_conf_room_telco
+bso_webex-d->as_webex
+
+ts_app_mgmt-u->tso_webex_admin
+tso_webex_admin-u->as_webex : Depends on
+
+@enduml

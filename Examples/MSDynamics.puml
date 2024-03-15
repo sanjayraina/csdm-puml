@@ -1,0 +1,57 @@
+@startuml
+
+!include ../CSDM.puml
+
+title Microsoft Dynamics
+
+' Design Domain
+'
+package "Design" {
+    top to bottom direction
+
+    card bc_service_customers $BusinessCapability("Service Customers")
+
+    card ba_ms_dynamics $BusinessApplication("Microsoft Dynamics")
+}
+
+' Sell/Consume Domain
+'
+package "Sell/Consume" {
+    top to bottom direction
+    card bs_crm $BusinessService("Customer Relationship Services")
+
+    card bso_dynamics_crm $BusinessServiceOffering("Dynamics CRM")
+    card bso_dynamics_reports $BusinessServiceOffering("Dynamics Reports")
+}
+
+' Manage Tech Domain
+'
+package "Manage Tech" {
+
+    card as_ms_dynamics $ApplicationService("Microsoft Dynamics")
+
+    card cigrp_infra $CIGroup("Infrastructure CIs")
+
+    rectangle "Technology Operations" #LightGrey;line.dotted {
+        card ts_app_mgmt $TechnicalService("Application Management Services")
+
+        card tso_dynamics_admin $TechnicalServiceOffering("Dynamics Admin")
+    }
+}
+
+' Relationships
+
+bc_service_customers-d->ba_ms_dynamics : Provided by
+ba_ms_dynamics-->as_ms_dynamics: Consumes
+
+bs_crm-->bso_dynamics_crm
+bs_crm-->bso_dynamics_reports
+bso_dynamics_crm-->as_ms_dynamics: Depends on
+bso_dynamics_crm-->bso_dynamics_reports: Depends on
+
+as_ms_dynamics-d->cigrp_infra
+
+ts_app_mgmt-u->tso_dynamics_admin
+tso_dynamics_admin-u->as_ms_dynamics : Depends on
+
+@enduml

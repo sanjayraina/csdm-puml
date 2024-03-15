@@ -1,0 +1,95 @@
+@startuml
+
+!include ../CSDM.puml
+
+title O365 Platform
+
+' Design Domain
+'
+package "Design" {
+    top to bottom direction
+    card ba_o365 $BusinessApplication("O365 E5")
+    card ba_ad $BusinessApplication("Active Directory")
+    card ba_teams $BusinessApplication("MS Teams")
+    card ba_sp_online $BusinessApplication("Sharepoint Online")
+    card ba_exchange $BusinessApplication("MS Exchange")
+}
+
+' Sell/Consume Domain
+'
+package "Sell/Consume" {
+    top to bottom direction
+    card sp_comms $ServicePortfolio("Communication")
+    card bs_direct_mesg $BusinessService("Direct Messaging")
+    card bs_file_share $BusinessService("File Share")
+    card bs_email $BusinessService("Email")
+    card bso_teams $BusinessServiceOffering("MS Teams")
+    card bso_sp_sites $BusinessServiceOffering("Sharepoint Sites")
+    card bso_outlook $BusinessServiceOffering("Outlook")
+}
+
+' Manage Tech Domain
+'
+package "Manage Tech" {
+
+    
+    rectangle "Application Service CIs" #Azure;line:grey {
+        card as_teams_saas $ApplicationService("Teams SaaS")
+        card as_sp_saas $ApplicationService("Sharepoint SaaS")
+        card as_exchange $ApplicationService("MS Exchange")
+        card as_ad_2018 $ApplicationService("AD 2018")
+
+        card ci_exchange $CI("Exchange App")
+
+        card ci_network $CI("Routers Switches")
+        card cigrp_router $CI("Routers")
+        card cigrp_win_servers $CI("Windows Servers")
+    }
+    
+    rectangle "Technology Operations" #LightGrey;line.dotted {
+        card ts_iam $TechnicalService("Identity and Access Mgmt")
+        card tso_ad_admin $TechnicalServiceOffering("AD Admin")
+        card ts_app_mgmt $TechnicalService("Application Mgmt")
+        card tso_exchange_admin $TechnicalServiceOffering("Exchange Admin")
+        card ts_hosting $TechnicalService("Hosting Services")
+        card tso_windows_admin $TechnicalServiceOffering("Windows Admin")
+        card ts_network $TechnicalService("Network Services")
+        card tso_network_admin $TechnicalServiceOffering("Network Admin")
+    }
+}
+
+' Relationships
+
+ba_o365-d->ba_teams
+ba_o365-d->ba_sp_online
+ba_o365-d->ba_exchange
+
+sp_comms-->bs_email
+sp_comms-->bs_direct_mesg
+
+bs_direct_mesg-->bso_teams
+bs_file_share-->bso_sp_sites
+bs_email-->bso_outlook
+bso_teams-->as_teams_saas: Depends on
+ba_teams-->as_teams_saas: Consumes
+bso_sp_sites-->as_sp_saas: Depends on
+ba_sp_online-->as_sp_saas: Consumes
+bso_outlook-->as_exchange: Depends on
+ba_exchange-->as_exchange: Consumes
+as_ad_2018-->as_exchange: Sends data to
+
+as_exchange->ci_exchange
+ci_exchange-->ci_network
+cigrp_win_servers-->ci_exchange
+cigrp_router-->ci_network
+
+ts_iam-u->tso_ad_admin
+tso_ad_admin-u->as_ad_2018 : Depends on
+ts_app_mgmt-u->tso_exchange_admin
+tso_exchange_admin-u->ci_exchange
+ts_hosting-u->tso_windows_admin
+tso_windows_admin-u->cigrp_win_servers
+ts_network-u->tso_network_admin
+tso_network_admin-u->cigrp_router
+
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+
+!include ../CSDM.puml
+
+title Client Compute Hardware
+
+' Design Domain
+'
+
+' Sell/Consume Domain
+'
+package "Sell/Consume" {
+    top to bottom direction
+    card bs_client_endpt $BusinessService("Client Endpoint Services")
+    card bso_laptop $BusinessServiceOffering("Laptop")
+    card bso_desktop $BusinessServiceOffering("Desktop")
+}
+
+' Manage Tech Domain
+'
+package "Manage Tech" {
+
+    
+    rectangle "Application Stack" #Azure;line:grey {
+        card cigrp_laptop $CIGroup("Laptops")
+        card cigrp_desktop $CIGroup("Desktops")
+    }
+    
+    rectangle "Technology Operations" #LightGrey;line.dotted {
+        card ts_personal_compute $TechnicalService("Personal Compute Services")
+        card tso_apple_os $TechnicalServiceOffering("Apple OS Admin")
+        card tso_windows_os $TechnicalServiceOffering("Windows OS Services")
+    }
+}
+
+' Relationships
+
+
+bs_client_endpt-->bso_laptop
+bs_client_endpt-->bso_desktop
+bso_laptop-d->cigrp_laptop
+bso_desktop-d->cigrp_desktop
+
+ts_personal_compute-u->tso_apple_os
+ts_personal_compute-u->tso_windows_os
+tso_apple_os-u->cigrp_laptop : Depends on
+tso_windows_os-u->cigrp_desktop : Depends on
+
+@enduml

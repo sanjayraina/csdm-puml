@@ -1,0 +1,78 @@
+@startuml
+
+!include ../CSDM.puml
+
+title Shared Technical ServiceNow
+
+' Design Domain
+'
+package "Design" {
+    top to bottom direction
+
+    card bc_dir_services $BusinessCapability("Directory Services Mgmt")
+
+    card ba_netiq $BusinessApplication("NetIQ eDirectory")
+    card ba_ms_ad $BusinessApplication("MS Active Directory")
+    card ba_open_ldap $BusinessApplication("Open LDAP")
+}
+
+' Sell/Consume Domain
+'
+package "Sell/Consume" {
+    top to bottom direction
+    card bs_file_sharing $BusinessService("File Sharing")
+
+    card bso_box $BusinessServiceOffering("Box")
+
+}
+
+' Manage Tech Domain
+'
+package "Manage Tech" {
+
+    card as_box $ApplicationService("Box")
+    
+    rectangle "Application Stack" #Azure;line:grey {
+        card as_servicenow $ApplicationService("ServiceNow")
+        card as_msexchange $ApplicationService("MS Exchange")
+        card as_ssap $ApplicationService("SAP")
+        card as_active_dir $ApplicationService("Active Directory")
+        card as_azure_ad $ApplicationService("Azure AD")
+        card as_ad_2018 $ApplicationService("Active Directory 2018")
+
+        card App $CIGroup("App")
+
+        card Server $CIGroup("Servers")
+
+    }
+    
+    rectangle "Technology Operations" #LightGrey;line.dotted {
+        card ts_ident_mgmt $TechnicalService("Identity Management")
+        card ts_hosting_svcs $TechnicalService("Hosting Services")
+        card tso_ad_admin $TechnicalServiceOffering("Active Directory Admin")
+        card tso_win_admin $TechnicalServiceOffering("Windows Admin")
+    }
+}
+
+' Relationships
+
+bc_dir_services-d->ba_netiq : Provided by
+bc_dir_services-d->ba_ms_ad : Provided by
+bc_dir_services-d->ba_open_ldap : Provided by
+ba_ms_ad-d->as_ad_2018 : Consumes
+ba_ms_ad-d->as_azure_ad : Consumes
+
+bs_file_sharing-->bso_box
+bso_box-->as_box: Depends on
+
+as_ad_2018-d->App: Depends on
+App-d->Server: Runs on
+
+ts_ident_mgmt-u->tso_ad_admin
+ts_hosting_svcs-u->tso_win_admin
+tso_ad_admin-u->as_azure_ad : Contains
+tso_ad_admin-u->as_ad_2018 : Contains
+tso_win_admin-->Server
+tso_ad_admin-->App
+
+@enduml

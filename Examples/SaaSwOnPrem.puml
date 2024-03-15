@@ -1,0 +1,99 @@
+@startuml
+
+!include ../CSDM.puml
+
+title SaaS Software On Prem 
+
+' Design Domain
+'
+package "Design" {
+    top to bottom direction
+
+    card servicenow $BusinessCapability("ServiceNow")
+    card servicenow_platform $BusinessApplication("ServiceNow Platform")
+    card servicenow_discovery $BusinessApplication("ServiceNow Discovery")
+    card servicenow_midserver $BusinessApplication("ServiceNow MidSeerver")
+    card servicenow_changemgmt $BusinessApplication("ServiceNow Change Mgmt")
+    card servicenow_hrsd $BusinessApplication("ServiceNow HR SD")
+}
+
+' Sell/Consume Domain
+'
+package "Sell/Consume" {
+    top to bottom direction
+    card onboarding $BusinessService("Onboarding")
+    card mobile_onboarding $BusinessServiceOffering("Mobile Onboarding")
+    card enterprise_onboarding $BusinessServiceOffering("Enterprise Onboarding")
+}
+
+' Manage Tech Domain
+'
+package "Manage Tech" {
+
+    rectangle "Application Stack"  {
+        card servicenow_tokyo_as $ApplicationService("ServiceNow Tokyo")
+        card servicenow_disco_as $ApplicationService("ServiceNow Discovery")
+        card servicenow_midserver_as $ApplicationService("ServiceNow Mid Server")
+        card servicenow_change_as $ApplicationService("ServiceNow Change Mgmt")
+        card servicenow_hrsd_as $ApplicationService("ServiceNow HR SD")
+
+
+        card java_app $CIGroup("java@server123")
+
+         card servers $CIGroup("Servers")
+
+    }
+    
+    rectangle "Technology Operations" #line.dotted {
+        card platform_services $TechnicalService("Platform Services")
+        card servicenow_admin $TechnicalServiceOffering("ServiceNow Administration")
+        card hosting_services $TechnicalServiceOffering("Hosting Services")
+        card discovery_admin $TechnicalServiceOffering("ServiceNow Discovery Admin")
+        card middleware_mgmt $TechnicalServiceOffering("Middleware Management")
+
+        card all_windows_servers $CIGroup("All Windows Servers")
+
+        card windows_mgmt $TechnicalServiceOffering("Windows Management")
+       
+
+
+    }
+}
+
+' Relationships
+' Design relationships
+servicenow-d->servicenow_platform : Provided by
+servicenow-d->servicenow_discovery : Provided by
+servicenow-d->servicenow_midserver : Provided by
+servicenow-d->servicenow_changemgmt : Provided by
+servicenow-d->servicenow_hrsd : Provided by
+servicenow_platform-->servicenow_tokyo_as: Consumes
+servicenow_discovery-->servicenow_disco_as: Consumes
+servicenow_midserver-->servicenow_midserver_as: Consumes
+servicenow_changemgmt-->servicenow_change_as: Consumes
+servicenow_hrsd-->servicenow_hrsd_as: Consumes
+
+' Bisuness Service relationships'
+onboarding-->mobile_onboarding
+onboarding-->enterprise_onboarding
+mobile_onboarding-->servicenow_hrsd_as: Depends on
+enterprise_onboarding-->servicenow_hrsd_as: Depends on
+servicenow_midserver_as-d->java_app: Runs on
+
+' Technical Service Relationship
+platform_services-u->servicenow_admin
+platform_services-u->discovery_admin
+platform_services-u->middleware_mgmt
+hosting_services-u->all_windows_servers
+all_windows_servers-u->windows_mgmt
+windows_mgmt-u->servers
+java_app-->servers: Runs on
+servicenow_admin-u->servicenow_change_as
+servicenow_admin-u->servicenow_hrsd_as
+servicenow_admin-u->servicenow_tokyo_as
+discovery_admin-u->servicenow_disco_as
+discovery_admin-u->servicenow_midserver_as
+middleware_mgmt-->java_app
+
+
+@enduml
